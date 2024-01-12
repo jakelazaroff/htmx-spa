@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>htmx spa</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/htmx.js"></script>
+    <script type="module">
+      async function load() {
+        try {
+          const registration = await navigator.serviceWorker.register("/sw.js", {
+            scope: "/",
+            type: "module",
+          });
+          if (registration.active) return;
+
+          const worker = registration.installing || registration.waiting;
+          if (!worker) throw new Error("No worker found");
+
+          worker.addEventListener("statechange", () => {
+            if (registration.active) location.reload();
+          });
+        } catch (err) {
+          console.error(`Registration failed with ${err}`);
+        }
+      }
+
+      if ("serviceWorker" in navigator) load();
+    </script>
+    <meta name="htmx-config" content='{"scrollIntoViewOnBoost": false}' />
+  </head>
+  <body hx-boost="true" hx-push-url="false" hx-target="body" hx-get="/ui" hx-trigger="load"></body>
+</html>

@@ -1,0 +1,99 @@
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: currentColor;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    overflow-wrap: break-word;
+  }
+
+  ol,
+  ul {
+    list-style: none;
+  }
+
+  :where(h1, h2, h3, h4, h5, h6):not([class]) {
+    margin-block: 0.75em;
+    margin-block: round(0.75em, 1px);
+  }
+
+  :where(ol, ul):not([class]) {
+    list-style: revert;
+    padding-inline-start: 1.5em;
+    padding-inline-start: round(1.5em, 1px);
+  }
+
+  :where(p, ol, ul):not([class]) {
+    margin-block: 1em;
+    margin-block: round(1em, 1px);
+  }
+
+  :where(li):not([class]) {
+    margin-block: 0.5em;
+    margin-block: round(0.5em, 1px);
+  }
+}
+
+body {
+  font-family: system-ui;
+  letter-spacing: -0.05ch;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.todos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.todo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
