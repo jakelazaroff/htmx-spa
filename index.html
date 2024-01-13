@@ -10,7 +10,6 @@
         try {
           const registration = await navigator.serviceWorker.register("/sw.js", {
             scope: "/",
-            type: "module",
           });
           if (registration.active) return;
 

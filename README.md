@@ -2,6 +2,8 @@
 
 A proof-of-concept single-page app using [HTMX](https://htmx.org) and [service workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
 
-The "server" logic and HTML templates are mostly in [`sw.js`](/sw.js). Routing and templating functions are in [`spsw.js`](/spsw.js).
+Everything is in a single file [`sw.js`](/sw.js) because Firefox doesn't support ES modules in service workers. It's split up into three sections:
 
-[IDB Keyval](https://github.com/jakearchibald/idb-keyval) is vendored in [`idb.js`](/idb.js) to wrap IndexedDB, which has an annoying API.
+1. A vendored copy of [IDB Keyval](https://github.com/jakearchibald/idb-keyval) because the IndexedDB API is annoying
+2. A mini "framework" with routing and templating functions
+3. The actual app logic and templates
