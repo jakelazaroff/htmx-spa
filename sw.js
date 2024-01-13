@@ -383,7 +383,7 @@ async function readableStreamToJSON(stream) {
 
 /* - - - APP CODE - - - */
 
-const spa = new SPA({ cache: ["/", "/index.html", "/style.css", "/htmx.js"] });
+const spa = new SPA({ cache: ["/", "/index.html", "/style.css", "/htmx.js", "/icons.svg"] });
 
 async function setFilter(filter) {
   await set("filter", filter);
@@ -430,6 +430,14 @@ async function deleteTodo(id) {
   await update("todos", (todos = []) => todos.filter(todo => todo.id !== id));
 }
 
+function Icon({ name }) {
+  return html`
+    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+      <use href="/icons.svg#${name}" />
+    </svg>
+  `;
+}
+
 function Todo({ id, text, done, editable }) {
   return html`
     <li class="todo">
@@ -451,62 +459,65 @@ function Todo({ id, text, done, editable }) {
             autofocus
           />`
         : html`<span
+            class="preview"
             hx-get="/ui/todos/${id}?editable=true"
             hx-trigger="dblclick"
             hx-target="closest .todo"
+            hx-swap="outerHTML"
           >
             ${text}
           </span>`}
-      <button hx-delete="/todos/${id}">x</button>
+      <button class="delete" hx-delete="/todos/${id}">${Icon({ name: "ex" })}</button>
     </li>
   `;
 }
 
 function App({ filter = "all", todos = [] } = {}) {
   return html`
-    <header class="header">
-      <h1>Todos</h1>
-      <form action="/ui">
-        <label>
-          All
-          <input
-            type="radio"
-            name="filter"
-            value="all"
-            oninput="this.form.requestSubmit()"
-            ${filter === "all" && "checked"}
-          />
-        </label>
-        <label>
-          Active
-          <input
-            type="radio"
-            name="filter"
-            value="left"
-            oninput="this.form.requestSubmit()"
-            ${filter === "left" && "checked"}
-          />
-        </label>
-        <label>
-          Completed
-          <input
-            type="radio"
-            name="filter"
-            value="done"
-            oninput="this.form.requestSubmit()"
-            ${filter === "done" && "checked"}
-          />
-        </label>
+    <div class="app">
+      <header class="header">
+        <h1>Todos</h1>
+        <form class="filters" action="/ui">
+          <label class="filter">
+            All
+            <input
+              type="radio"
+              name="filter"
+              value="all"
+              oninput="this.form.requestSubmit()"
+              ${filter === "all" && "checked"}
+            />
+          </label>
+          <label class="filter">
+            Active
+            <input
+              type="radio"
+              name="filter"
+              value="left"
+              oninput="this.form.requestSubmit()"
+              ${filter === "left" && "checked"}
+            />
+          </label>
+          <label class="filter">
+            Completed
+            <input
+              type="radio"
+              name="filter"
+              value="done"
+              oninput="this.form.requestSubmit()"
+              ${filter === "done" && "checked"}
+            />
+          </label>
+        </form>
+      </header>
+      <ul class="todos">
+        ${todos.map(todo => Todo(todo))}
+      </ul>
+      <form class="submit" action="/todos/add" method="get">
+        <input type="text" name="text" autofocus placeholder="What needs to be done?" />
       </form>
-    </header>
-    <ul class="todos">
-      ${todos.map(todo => Todo(todo))}
-    </ul>
-    <form action="/todos/add" method="get">
-      <input name="text" autofocus placeholder="What needs to be done?" />
-      <button>submit</button>
-    </form>
-  `;
+    </div>
+  `.trim();
 }
 
 spa.get("/ui", async (_request, { query }) => {
