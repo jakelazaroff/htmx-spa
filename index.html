@@ -8,9 +8,8 @@
     <script type="module">
       async function load() {
         try {
-          const registration = await navigator.serviceWorker.register("/sw.js", {
+          const registration = await navigator.serviceWorker.register("/bundled-sw.js", {
             scope: "/",
-            type: "module",
           });
           if (registration.active) return;
 
