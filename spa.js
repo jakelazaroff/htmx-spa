@@ -56,7 +56,9 @@ export default class SPA {
 
       let body = {};
       try {
-        if (request.body) body = await readableStreamToJSON(request.body);
+        body = request.body
+          ? await readableStreamToJSON(request.body)
+          : Object.fromEntries(await request.formData());
       } catch (err) {
         console.warn("Couldn't parse request body as JSON", err);
       }
