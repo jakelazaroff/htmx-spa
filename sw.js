@@ -179,7 +179,7 @@ function entries(customStore = defaultGetStore()) {
     if (store.getAll && store.getAllKeys) {
       return Promise.all([
         promisifyRequest(store.getAllKeys()),
-        promisifyRequest(store.getAll()),
+        promisifyRequest(store.getAll())
       ]).then(([keys, values]) => keys.map((key, i) => [key, values[i]]));
     }
     const items = [];
@@ -513,8 +513,21 @@ function App({ filter = "all", todos = [] } = {}) {
       <ul class="todos">
         ${todos.map(todo => Todo(todo))}
       </ul>
-      <form class="submit" action="/todos/add" method="get">
-        <input type="text" name="text" autofocus placeholder="What needs to be done?" />
+      <form
+        class="submit"
+        action="/todos/add"
+        method="get"
+        hx-select=".todos"
+        hx-target=".todos"
+        hx-swap="outerHTML"
+        hx-on::before-request="this.reset()"
+      >
+        <input
+          type="text"
+          name="text"
+          placeholder="What needs to be done?"
+          hx-on::after-request="this.focus()"
+        />
       </form>
     </div>
   `.trim();
