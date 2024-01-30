@@ -118,6 +118,10 @@ body {
     padding: 8px;
   }
 
+  &:has(:checked) .preview {
+    text-decoration: line-through;
+  }
+
   .delete {
     margin-left: auto;
     display: grid;
