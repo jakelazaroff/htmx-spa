@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>htmx spa</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="/style.css" />
-    <script src="/htmx.js"></script>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./htmx.js"></script>
     <script type="module">
       async function load() {
         try {
@@ -26,5 +26,5 @@
     </script>
     <meta name="htmx-config" content='{"scrollIntoViewOnBoost": false}' />
   </head>
-  <body hx-boost="true" hx-push-url="false" hx-target="body" hx-get="/ui" hx-trigger="load"></body>
+  <body hx-boost="true" hx-push-url="false" hx-target="body" hx-get="./ui" hx-trigger="load"></body>
 </html>

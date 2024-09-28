@@ -208,6 +208,8 @@ class SPA {
   /** @type {Array<[Method, URLPattern, Handler]>} */
   #routes = [];
 
+  #scope = new URL(self.registration.scope).pathname.replace(/\/$/, "");
+
   /** @param {SPAOptions} options */
   constructor(options = {}) {
     this.#debug = options.debug ?? this.#debug;
@@ -238,7 +240,7 @@ class SPA {
 
   /** @param {Request} request */
   async match(request) {
-    const url = new URL(request.url);
+    const url = new URL(request.url, self.registration.scope);
     if (this.#debug) console.log(`[${request.method}] ${url.pathname}`);
 
     for (const [method, pattern, handler] of this.#routes) {
@@ -270,7 +272,7 @@ class SPA {
    * @param {Handler} handler
    */
   post(path, handler) {
-    this.#routes.push(["POST", new URLPattern(path), handler]);
+    this.#routes.push(["POST", new URLPattern(this.#scope + path), handler]);
   }
 
   /**
@@ -278,7 +280,7 @@ class SPA {
    * @param {Handler} handler
    */
   get(path, handler) {
-    this.#routes.push(["GET", new URLPattern(path), handler]);
+    this.#routes.push(["GET", new URLPattern(this.#scope + path), handler]);
   }
 
   /**
@@ -286,7 +288,7 @@ class SPA {
    * @param {Handler} handler
    */
   put(path, handler) {
-    this.#routes.push(["PUT", new URLPattern(path), handler]);
+    this.#routes.push(["PUT", new URLPattern(this.#scope + path), handler]);
   }
 
   /**
@@ -294,7 +296,7 @@ class SPA {
    * @param {Handler} handler
    */
   delete(path, handler) {
-    this.#routes.push(["DELETE", new URLPattern(path), handler]);
+    this.#routes.push(["DELETE", new URLPattern(this.#scope + path), handler]);
   }
 }
 
@@ -383,7 +385,7 @@ async function readableStreamToJSON(stream) {
 
 /* - - - APP CODE - - - */
 
-const spa = new SPA({ cache: ["/", "/index.html", "/style.css", "/htmx.js", "/icons.svg"] });
+const spa = new SPA({ cache: ["./", "./index.html", "./style.css", "./htmx.js", "./icons.svg"] });
 
 async function setFilter(filter) {
   await set("filter", filter);
@@ -433,7 +435,7 @@ async function deleteTodo(id) {
 function Icon({ name }) {
   return html`
     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
-      <use href="/icons.svg#${name}" />
+      <use href="./icons.svg#${name}" />
     </svg>
   `;
 }
@@ -445,7 +447,7 @@ function Todo({ id, text, done, editable }) {
         type="checkbox"
         name="done"
         value="true"
-        hx-get="/todos/${id}/update"
+        hx-get="./todos/${id}/update"
         hx-vals="js:{done: event.target.checked}"
         ${done && "checked"}
       />
@@ -454,20 +456,20 @@ function Todo({ id, text, done, editable }) {
             type="text"
             name="text"
             value="${text}"
-            hx-get="/todos/${id}/update"
+            hx-get="./todos/${id}/update"
             hx-trigger="change,blur"
             autofocus
           />`
         : html`<span
             class="preview"
-            hx-get="/ui/todos/${id}?editable=true"
+            hx-get="./ui/todos/${id}?editable=true"
             hx-trigger="dblclick"
             hx-target="closest .todo"
             hx-swap="outerHTML"
           >
             ${text}
           </span>`}
-      <button class="delete" hx-delete="/todos/${id}">${Icon({ name: "ex" })}</button>
+      <button class="delete" hx-delete="./todos/${id}">${Icon({ name: "ex" })}</button>
     </li>
   `;
 }
@@ -477,7 +479,7 @@ function App({ filter = "all", todos = [] } = {}) {
     <div class="app">
       <header class="header">
         <h1>Todos</h1>
-        <form class="filters" action="/ui">
+        <form class="filters" action="./ui">
           <label class="filter">
             All
             <input
@@ -515,7 +517,7 @@ function App({ filter = "all", todos = [] } = {}) {
       </ul>
       <form
         class="submit"
-        action="/todos/add"
+        action="./todos/add"
         method="get"
         hx-select=".todos"
         hx-target=".todos"
@@ -538,8 +540,8 @@ spa.get("/ui", async (_request, { query }) => {
   await setFilter(filter);
 
   const headers = {};
-  if (filter === "all") headers["hx-replace-url"] = "/";
-  else headers["hx-replace-url"] = "/?filter=" + filter;
+  if (filter === "all") headers["hx-replace-url"] = "./";
+  else headers["hx-replace-url"] = "./?filter=" + filter;
 
   const html = App({ foo: `${await get("foo")}`, filter, todos: await listTodos() });
   return new Response(html, { headers });
