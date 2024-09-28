@@ -8,9 +8,7 @@
     <script type="module">
       async function load() {
         try {
-          const registration = await navigator.serviceWorker.register("/sw.js", {
-            scope: "/",
-          });
+          const registration = await navigator.serviceWorker.register("./sw.js");
           if (registration.active) return;
 
           const worker = registration.installing || registration.waiting;
