@@ -1,6 +1,6 @@
 # HTMX SPA
 
-A proof-of-concept single-page app using [HTMX](https://htmx.org) and [service workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
+A proof-of-concept fully client-side single-page app using [htmx](https://htmx.org) and [service workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
 
 Everything is in a single file [`sw.js`](/sw.js) because Firefox doesn't support ES modules in service workers. It's split up into three sections:
 
